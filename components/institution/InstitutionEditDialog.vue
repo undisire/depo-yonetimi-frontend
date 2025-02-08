@@ -87,7 +87,9 @@ function open(data) {
   id.value = data?.id;
 
   if (data) {
-    setValues(data);
+    setValues({
+      name: data.name,
+    });
   }
 }
 
