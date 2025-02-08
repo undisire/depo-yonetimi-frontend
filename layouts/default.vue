@@ -42,6 +42,7 @@ const menu = [
   { icon: "mdi-warehouse", title: "Depolar", to: "/warehouses" },
   { icon: "mdi-package-variant-closed", title: "Projeler", to: "/projects" },
   { icon: "mdi-package", title: "Malzemeler", to: "/materials" },
+  { icon: "mdi-domain", title: "Kurumlar", to: "/institutions" },
 ];
 
 const filteredMenu = computed(() =>
