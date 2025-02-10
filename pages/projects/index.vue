@@ -58,6 +58,14 @@
 
         <template #item.actions="{ item }">
           <v-btn
+            icon="mdi-eye"
+            :to="{ name: 'projects-id-users', params: { id: item.id } }"
+            color="primary"
+            size="x-small"
+            variant="text"
+            class="mr-2"
+          />
+          <v-btn
             icon="mdi-pencil"
             @click="editDialog.open(item)"
             color="primary"
@@ -120,6 +128,14 @@ const headers = [
   {
     title: "Bitiş Tarihi",
     value: "end_date",
+  },
+  {
+    title: "Mühendis Sayısı",
+    value: "engineer_count",
+  },
+  {
+    title: "Taşeron Sayısı",
+    value: "contractor_count",
   },
   {
     title: "Durum",

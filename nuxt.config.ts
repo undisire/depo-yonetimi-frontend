@@ -1,4 +1,5 @@
 import { tr } from "vuetify/locale";
+import colors from "vuetify/util/colors";
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -29,6 +30,20 @@ export default defineNuxtConfig({
       localeMessages: ["tr"],
       date: {
         adapter: "date-fns",
+      },
+      theme: {
+        themes: {
+          light: {
+            dark: false,
+            colors: {
+              background: colors.grey.lighten4,
+            },
+          },
+          dark: {
+            dark: true,
+            colors: {},
+          },
+        },
       },
     },
   },
