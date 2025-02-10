@@ -9,7 +9,7 @@
       <div
         class="d-flex justify-space-between align-center flex-wrap ga-4 mb-2"
       >
-        <h1 class="text-h5 text-md-h4 ps-1">Kurumlar</h1>
+        <h1 class="text-h5 text-md-h4 ps-1">Çalışanlar</h1>
         <div class="d-flex ga-2 align-center">
           <v-btn
             color="primary"
@@ -32,6 +32,9 @@
         hide-default-footer
         :items-per-page="-1"
       >
+        <template #item.name="{ item }">
+          {{ item.first_name }} {{ item.last_name }}
+        </template>
         <template #item.actions="{ item }">
           <v-btn
             icon="mdi-pencil"
@@ -52,7 +55,7 @@
       </v-data-table>
     </v-card>
 
-    <InstitutionEditDialog ref="editDialog" @saved="refresh" />
+    <EmployeeEditDialog ref="editDialog" @saved="refresh" />
   </v-container>
 </template>
 
@@ -86,8 +89,16 @@ const headers = [
     value: "id",
   },
   {
-    title: "Kurum Adı",
+    title: "Çalışan Adı",
     value: "name",
+  },
+  {
+    title: "Telefon Numarası",
+    value: "phone",
+  },
+  {
+    title: "Rol",
+    value: "role.name",
   },
   {
     title: "İşlemler",
@@ -97,7 +108,7 @@ const headers = [
 ];
 
 const { data, status, refresh } = useLazyAsyncData(
-  () => client.get("/institutions").then((x) => x.data),
+  () => client.get("/employees").then((x) => x.data),
   {
     transform: (res) => res.data,
     default: () => [],
@@ -106,14 +117,14 @@ const { data, status, refresh } = useLazyAsyncData(
 
 function handleDelete(item) {
   confirm.open({
-    title: "Kurum Sil",
-    description: `Kurum silinecek: ${item.name}`,
+    title: "Çalışan Sil",
+    description: `Çalışan silinecek: ${item.first_name}`,
     onConfirm: () => {
       loadingConfirm.value = true;
       client
-        .delete(`/institutions/${item.id}`)
+        .delete(`/employees/${item.id}`)
         .then(() => {
-          $toast.success("Kurum başarıyla silindi.");
+          $toast.success("Çalışan başarıyla silindi.");
           refresh();
           confirm.close();
         })

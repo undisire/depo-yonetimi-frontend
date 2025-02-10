@@ -14,51 +14,33 @@
           <v-text-field
             variant="outlined"
             density="comfortable"
-            label="Proje Adı"
-            v-model="name"
-            v-bind="nameProps"
+            label="Çalışan Adı"
+            v-model="firstName"
+            v-bind="firstNameProps"
           />
           <v-text-field
             variant="outlined"
             density="comfortable"
-            label="Proje PYP No"
-            v-model="pypCode"
-            v-bind="pypCodeProps"
+            label="Çalışan Soyadı"
+            v-model="lastName"
+            v-bind="lastNameProps"
           />
-          <v-textarea
+          <v-text-field
             variant="outlined"
             density="comfortable"
-            label="Açıklama"
-            v-model="description"
-            v-bind="descriptionProps"
+            label="Telefon Numarası"
+            v-model="phone"
+            v-bind="phoneProps"
           />
           <v-select
             variant="outlined"
             density="comfortable"
-            v-model="status"
-            v-bind="statusProps"
-            :items="statuses"
-            label="Durum"
-            dense
-            outlined
-          />
-          <v-text-field
-            type="date"
-            variant="outlined"
-            density="comfortable"
-            label="Başlangıç Tarihi"
-            clearable
-            v-model="startDate"
-            v-bind="startDateProps"
-          />
-          <v-text-field
-            type="date"
-            variant="outlined"
-            density="comfortable"
-            label="Bitiş Tarihi"
-            clearable
-            v-model="endDate"
-            v-bind="endDateProps"
+            label="Rol"
+            v-model="role"
+            v-bind="roleProps"
+            :items="roles"
+            item-title="name"
+            item-value="id"
           />
         </v-form>
       </v-card-text>
@@ -71,7 +53,7 @@
 </template>
 
 <script setup>
-import { object, string, bool } from "yup";
+import { object, string } from "yup";
 import { toTypedSchema } from "@vee-validate/yup";
 
 const emit = defineEmits(["saved"]);
@@ -79,26 +61,11 @@ const emit = defineEmits(["saved"]);
 const client = useJwtClient();
 const $toast = useToast();
 
-const statuses = [
-  {
-    title: "Aktif",
-    value: "active",
-  },
-  {
-    title: "İptal",
-    value: "cancelled",
-  },
-  {
-    title: "Tamamlandı",
-    value: "completed",
-  },
-];
-
 const dialog = ref(false);
 const id = ref();
 const isEditModel = computed(() => !!id.value);
 const dialogTitle = computed(() =>
-  isEditModel.value ? "Proje Düzenle" : "Proje Ekle"
+  isEditModel.value ? "Çalışan Düzenle" : "Çalışan Ekle"
 );
 
 const { setErrors, handleSubmit, defineField, resetForm, setValues } = useForm({
@@ -107,7 +74,10 @@ const { setErrors, handleSubmit, defineField, resetForm, setValues } = useForm({
   },
   validationSchema: toTypedSchema(
     object({
-      name: string().required("Proje adı zorunludur."),
+      first_name: string().required("Çalışan adı zorunludur."),
+      last_name: string().required("Çalışan soyadı zorunludur."),
+      phone: string().required("Telefon numarası zorunludur."),
+      role_id: string().required("Rol zorunludur."),
     })
   ),
 });
@@ -118,28 +88,23 @@ const vuetifyConfig = (state) => ({
   },
 });
 
-const [name, nameProps] = defineField("name", vuetifyConfig);
-const [description, descriptionProps] = defineField(
-  "description",
-  vuetifyConfig
-);
-const [status, statusProps] = defineField("status", vuetifyConfig);
-const [startDate, startDateProps] = defineField("start_date", vuetifyConfig);
-const [endDate, endDateProps] = defineField("end_date", vuetifyConfig);
-const [pypCode, pypCodeProps] = defineField("pyp_code", vuetifyConfig);
+const [firstName, firstNameProps] = defineField("first_name", vuetifyConfig);
+const [lastName, lastNameProps] = defineField("last_name", vuetifyConfig);
+const [phone, phoneProps] = defineField("phone", vuetifyConfig);
+const [role, roleProps] = defineField("role_id", vuetifyConfig);
 
 const submit = handleSubmit((values) => {
   client({
-    url: isEditModel.value ? `/projects/${id.value}` : "/projects",
+    url: isEditModel.value ? `/employees/${id.value}` : "/employees",
     method: isEditModel.value ? "put" : "post",
     data: values,
   }).then((res) => {
     emit("saved", res.data?.data, isEditModel.value);
 
     if (isEditModel.value) {
-      $toast.success("Proje başarıyla güncellendi.");
+      $toast.success("Çalışan başarıyla güncellendi.");
     } else {
-      $toast.success("Proje başarıyla eklendi.");
+      $toast.success("Çalışan başarıyla eklendi.");
     }
 
     dialog.value = false;
@@ -152,9 +117,27 @@ function open(data) {
   id.value = data?.id;
 
   if (data) {
-    setValues(data);
+    setValues({
+      first_name: data.first_name,
+      last_name: data.last_name,
+      phone: data.phone,
+      role_id: data.role_id,
+    });
   }
 }
 
 defineExpose({ open });
+
+const { data: roles } = await useLazyAsyncData(
+  () =>
+    client.get("/roles", {
+      params: {
+        type: "employee",
+      },
+    }),
+  {
+    transform: (res) => res.data?.data,
+    default: () => [],
+  }
+);
 </script>

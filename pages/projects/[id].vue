@@ -19,6 +19,8 @@
           <v-card-title class="text-h6">Proje Bilgileri</v-card-title>
           <v-card-text>
             <v-row dense>
+              <v-col cols="12"><b>Pyp No</b></v-col>
+              <v-col cols="12">{{ data.pyp_code || "-" }}</v-col>
               <v-col cols="12"><b>Başlangıç Tarihi</b></v-col>
               <v-col cols="12">{{
                 data.start_date
@@ -42,10 +44,8 @@
               }}</v-col>
               <v-col cols="12"><b>Durum</b></v-col>
               <v-col cols="12">{{ data.status }}</v-col>
-              <v-col cols="12"><b>Mühendis Sayısı</b></v-col>
-              <v-col cols="12">{{ data.engineer_count }}</v-col>
-              <v-col cols="12"><b>Taşeron Sayısı</b></v-col>
-              <v-col cols="12">{{ data.contractor_count }}</v-col>
+              <v-col cols="12"><b>Çalışan Sayısı</b></v-col>
+              <v-col cols="12">{{ data.employees_count || "-" }}</v-col>
             </v-row>
           </v-card-text>
         </v-card>

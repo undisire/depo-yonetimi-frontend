@@ -9,7 +9,7 @@
       <div
         class="d-flex justify-space-between align-center flex-wrap ga-4 mb-2"
       >
-        <h1 class="text-h5 text-md-h4 ps-1">Kurumlar</h1>
+        <h1 class="text-h5 text-md-h4 ps-1">Çalışan Rolleri</h1>
         <div class="d-flex ga-2 align-center">
           <v-btn
             color="primary"
@@ -23,17 +23,21 @@
       </div>
     </section>
 
-    <v-card border flat rounded="lg">
+    <v-card flat border rounded="lg">
       <v-data-table
-        density="comfortable"
-        :headers="headers"
         :items="data"
-        :loading="status === 'pending'"
-        hide-default-footer
+        :headers="headers"
         :items-per-page="-1"
+        hide-default-footer
+        :loading="status === 'pending'"
+        density="comfortable"
       >
+        <template #item.type="{ item }">
+          {{ typeDisplayTexts?.[item.type] || item.type }}
+        </template>
         <template #item.actions="{ item }">
           <v-btn
+            v-if="!item.is_system"
             icon="mdi-pencil"
             @click="editDialog.open(item)"
             color="primary"
@@ -42,6 +46,7 @@
             class="mr-2"
           />
           <v-btn
+            v-if="!item.is_system"
             icon="mdi-delete"
             @click="handleDelete(item)"
             color="error"
@@ -52,7 +57,7 @@
       </v-data-table>
     </v-card>
 
-    <InstitutionEditDialog ref="editDialog" @saved="refresh" />
+    <RoleEditDialog ref="editDialog" @saved="refresh" type="employee" />
   </v-container>
 </template>
 
@@ -81,23 +86,24 @@ const items = [
 ];
 
 const headers = [
-  {
-    title: "#",
-    value: "id",
-  },
-  {
-    title: "Kurum Adı",
-    value: "name",
-  },
-  {
-    title: "İşlemler",
-    value: "actions",
-    align: "end",
-  },
+  { title: "Rol Adı", value: "name" },
+  { title: "İşlemler", value: "actions", sortable: false, align: "end" },
 ];
 
+const typeDisplayTexts = {
+  user: "Kullanıcı",
+  employee: "Çalışan",
+};
+
 const { data, status, refresh } = useLazyAsyncData(
-  () => client.get("/institutions").then((x) => x.data),
+  () =>
+    client
+      .get("/roles", {
+        params: {
+          type: "employee",
+        },
+      })
+      .then((x) => x.data),
   {
     transform: (res) => res.data,
     default: () => [],
@@ -106,14 +112,14 @@ const { data, status, refresh } = useLazyAsyncData(
 
 function handleDelete(item) {
   confirm.open({
-    title: "Kurum Sil",
-    description: `Kurum silinecek: ${item.name}`,
+    title: "Çalışan rolü Sil",
+    description: `Çalışan rolü silinecek: ${item.name}`,
     onConfirm: () => {
       loadingConfirm.value = true;
       client
-        .delete(`/institutions/${item.id}`)
+        .delete(`/roles/${item.id}`)
         .then(() => {
-          $toast.success("Kurum başarıyla silindi.");
+          $toast.success("Çalışan rolü başarıyla silindi.");
           refresh();
           confirm.close();
         })

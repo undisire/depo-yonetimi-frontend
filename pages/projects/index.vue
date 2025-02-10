@@ -59,7 +59,7 @@
         <template #item.actions="{ item }">
           <v-btn
             icon="mdi-eye"
-            :to="{ name: 'projects-id-users', params: { id: item.id } }"
+            :to="{ name: 'projects-id-employees', params: { id: item.id } }"
             color="primary"
             size="x-small"
             variant="text"
@@ -122,6 +122,10 @@ const headers = [
     value: "name",
   },
   {
+    title: "PYP No",
+    value: "pyp_code",
+  },
+  {
     title: "Başlangıç Tarihi",
     value: "start_date",
   },
@@ -130,12 +134,8 @@ const headers = [
     value: "end_date",
   },
   {
-    title: "Mühendis Sayısı",
-    value: "engineer_count",
-  },
-  {
-    title: "Taşeron Sayısı",
-    value: "contractor_count",
+    title: "Çalışan Sayısı",
+    value: "employees_count",
   },
   {
     title: "Durum",
