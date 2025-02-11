@@ -9,13 +9,13 @@
       <div
         class="d-flex justify-space-between align-center flex-wrap ga-4 mb-2"
       >
-        <h1 class="text-h5 text-md-h4 ps-1">Malzemeler</h1>
+        <h1 class="text-h5 text-md-h4 ps-1">Ölçü birimileri</h1>
         <div class="d-flex ga-2 align-center">
           <v-btn
             color="primary"
             rounded="lg"
             flat
-            :to="{ name: 'materials-edit' }"
+            @click="editDialog.open()"
             prepend-icon="mdi-plus"
             >Yeni Ekle</v-btn
           >
@@ -24,20 +24,18 @@
     </section>
 
     <v-card border flat rounded="lg">
-      <v-data-table-server
-        v-model:items-per-page="itemsPerPage"
-        v-model:page="currentPage"
-        :items-length="data.pagination.total"
+      <v-data-table
         density="comfortable"
         :headers="headers"
-        :items="data.data"
-        :loading="status === 'loading'"
-        @update:options="execute"
+        :items="data"
+        :loading="status === 'pending'"
+        hide-default-footer
+        :items-per-page="-1"
       >
         <template #item.actions="{ item }">
           <v-btn
             icon="mdi-pencil"
-            :to="{ name: 'materials-edit', query: { id: item.id } }"
+            @click="editDialog.open(item)"
             color="primary"
             size="x-small"
             variant="text"
@@ -51,8 +49,10 @@
             variant="text"
           />
         </template>
-      </v-data-table-server>
+      </v-data-table>
     </v-card>
+
+    <UomEditDialog ref="editDialog" @saved="refresh" />
   </v-container>
 </template>
 
@@ -66,8 +66,7 @@ const $toast = useToast();
 const confirm = useConfirm();
 
 const loadingConfirm = ref(false);
-const itemsPerPage = ref(50);
-const currentPage = ref(1);
+const editDialog = ref(null);
 
 const items = [
   {
@@ -83,24 +82,16 @@ const items = [
 
 const headers = [
   {
-    title: "Kod",
-    value: "code",
+    title: "#",
+    value: "id",
   },
   {
-    title: "Sap No",
-    value: "sap_no",
-  },
-  {
-    title: "Malzeme",
+    title: "Adı",
     value: "name",
   },
   {
-    title: "Birim",
-    value: "uom.name",
-  },
-  {
-    title: "Toplam Stok",
-    value: "total_stock",
+    title: "Sembol",
+    value: "symbol",
   },
   {
     title: "İşlemler",
@@ -109,39 +100,24 @@ const headers = [
   },
 ];
 
-const { data, status, refresh, execute } = useLazyAsyncData(
-  () =>
-    client
-      .get("/materials", {
-        params: {
-          page: currentPage.value,
-          limit: itemsPerPage.value,
-        },
-      })
-      .then((x) => x.data),
+const { data, status, refresh } = useLazyAsyncData(
+  () => client.get("/uoms").then((x) => x.data),
   {
-    immediate: false,
-    default: () => {
-      return {
-        data: [],
-        pagination: {
-          total: 0,
-        },
-      };
-    },
+    transform: (res) => res.data,
+    default: () => [],
   }
 );
 
 function handleDelete(item) {
   confirm.open({
-    title: "Malzeme Sil",
-    description: `Malzeme silinecek: ${item.name}`,
+    title: "Ölçü birimi Sil",
+    description: `Ölçü birimi silinecek: ${item.name}`,
     onConfirm: () => {
       loadingConfirm.value = true;
       client
-        .delete(`/materials/${item.id}`)
+        .delete(`/uoms/${item.id}`)
         .then(() => {
-          $toast.success("Malzeme başarıyla silindi.");
+          $toast.success("Ölçü birimi başarıyla silindi.");
           refresh();
           confirm.close();
         })

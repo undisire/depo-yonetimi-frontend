@@ -60,6 +60,7 @@ const menu = [
   { icon: "mdi-package-variant-closed", title: "Projeler", to: "/projects" },
   { icon: "mdi-package", title: "Malzemeler", to: "/materials" },
   { icon: "mdi-domain", title: "Kurumlar", to: "/institutions" },
+  { icon: "mdi-ruler", title: "Ölçü Birimleri", to: "/uoms" },
   {
     icon: "mdi-account-hard-hat",
     title: "Çalışanlar",
@@ -82,7 +83,7 @@ const menu = [
 const filteredMenu = computed(() =>
   menu.filter((x) => {
     if (!x.roles) return true;
-    return x.roles.includes(user.value.role);
+    return x.roles.includes(user.value?.role);
   })
 );
 </script>

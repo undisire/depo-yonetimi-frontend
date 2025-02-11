@@ -22,6 +22,13 @@
               <v-text-field
                 variant="outlined"
                 density="comfortable"
+                label="SAP No"
+                v-model="sapNo"
+                v-bind="sapNoProps"
+              ></v-text-field>
+              <v-text-field
+                variant="outlined"
+                density="comfortable"
                 label="Malzeme Kodu"
                 v-model="code"
                 v-bind="codeProps"
@@ -185,6 +192,7 @@ const [description, descriptionProps] = defineField(
   "description",
   vuetifyConfig
 );
+const [sapNo, sapNoProps] = defineField("sap_no", vuetifyConfig);
 const { remove, push, fields } = useFieldArray("attributes", vuetifyConfig);
 
 function addAttribute() {
@@ -220,6 +228,7 @@ function loadData() {
     client.get(`/materials/${id}`).then((res) => {
       const data = res.data.data;
       setValues({
+        sap_no: data.sap_no,
         code: data.code,
         name: data.name,
         uom_id: data.uom_id,
