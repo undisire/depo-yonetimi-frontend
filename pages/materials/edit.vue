@@ -29,13 +29,6 @@
               <v-text-field
                 variant="outlined"
                 density="comfortable"
-                label="Malzeme Kodu"
-                v-model="code"
-                v-bind="codeProps"
-              ></v-text-field>
-              <v-text-field
-                variant="outlined"
-                density="comfortable"
                 label="Malzeme Adı"
                 v-model="name"
                 v-bind="nameProps"
@@ -171,7 +164,7 @@ const { setErrors, handleSubmit, defineField, resetForm, setValues } = useForm({
   },
   validationSchema: toTypedSchema(
     object({
-      code: string().required("Malzeme kodu zorunludur."),
+      sap_no: string().required("SAP No zorunludur."),
       name: string().required("Malzeme adı zorunludur."),
       uom_id: number().required("Birim zorunludur."),
       description: string().nullable(),
@@ -185,7 +178,6 @@ const vuetifyConfig = (state) => ({
   },
 });
 
-const [code, codeProps] = defineField("code", vuetifyConfig);
 const [name, nameProps] = defineField("name", vuetifyConfig);
 const [uom, uomProps] = defineField("uom_id", vuetifyConfig);
 const [description, descriptionProps] = defineField(
@@ -229,7 +221,6 @@ function loadData() {
       const data = res.data.data;
       setValues({
         sap_no: data.sap_no,
-        code: data.code,
         name: data.name,
         uom_id: data.uom_id,
         description: data.description,

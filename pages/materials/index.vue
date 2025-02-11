@@ -83,10 +83,6 @@ const items = [
 
 const headers = [
   {
-    title: "Kod",
-    value: "code",
-  },
-  {
     title: "Sap No",
     value: "sap_no",
   },
