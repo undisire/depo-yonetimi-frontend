@@ -27,11 +27,11 @@
       <v-data-table-server
         v-model:items-per-page="itemsPerPage"
         v-model:page="currentPage"
-        :items-length="data.pagination.total"
+        :items-length="data.meta.total"
         density="comfortable"
         :headers="headers"
         :items="data.data"
-        :loading="status === 'loading'"
+        :loading="status === 'pending'"
         @update:options="execute"
       >
         <template #item.actions="{ item }">
@@ -120,7 +120,7 @@ const { data, status, refresh, execute } = useLazyAsyncData(
     default: () => {
       return {
         data: [],
-        pagination: {
+        meta: {
           total: 0,
         },
       };

@@ -62,6 +62,28 @@ const menu = [
   { icon: "mdi-domain", title: "Kurumlar", to: "/institutions" },
   { icon: "mdi-ruler", title: "Ölçü Birimleri", to: "/uoms" },
   {
+    icon: "mdi-package-variant-closed",
+    title: "Envanter",
+    children: [
+      {
+        title: "Liste",
+        to: "/inventory/items",
+      },
+      {
+        title: "Envanter Ekle",
+        to: "/inventory/items/create",
+      },
+      {
+        title: "Revizyonlar",
+        to: "/inventory/revisions",
+      },
+      {
+        title: "İşlemler",
+        to: "/inventory/transactions",
+      },
+    ],
+  },
+  {
     icon: "mdi-account-hard-hat",
     title: "Çalışanlar",
     to: "/employees",
