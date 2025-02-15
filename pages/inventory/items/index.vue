@@ -35,7 +35,14 @@
         @update:options="execute"
       >
         <template #item.material.name="{ item }">
-          {{ item.material.name }} [{{ item.material.sap_no }}]
+          {{ item.material.name }}
+          <v-chip
+            label
+            size="x-small"
+            class="font-weight-medium ml-1"
+            v-if="item.item_type == 'part'"
+            >Parça</v-chip
+          >
         </template>
         <template #item.quantity="{ item }">
           {{ item.quantity }} {{ item?.uom?.symbol }}
@@ -98,8 +105,8 @@ const items = [
 
 const headers = [
   {
-    title: "#",
-    value: "id",
+    title: "Sap No",
+    value: "material.sap_no",
   },
   {
     title: "Malzeme",

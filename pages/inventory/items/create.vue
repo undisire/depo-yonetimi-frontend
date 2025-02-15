@@ -51,31 +51,26 @@
                 v-model="institutionId"
                 v-bind="institutionIdProps"
               />
-              <v-row>
-                <v-col cols="12" md="8">
-                  <v-text-field
-                    label="Miktar"
-                    variant="outlined"
-                    density="comfortable"
-                    type="number"
-                    v-model="quantity"
-                    v-bind="quantityProps"
-                  />
-                </v-col>
-                <v-col cols="12" md="4">
-                  <v-select
-                    label="Birim"
-                    variant="outlined"
-                    density="comfortable"
-                    :items="uoms"
-                    :loading="statusUom === 'pending'"
-                    item-title="name"
-                    item-value="id"
-                    v-model="uomId"
-                    v-bind="uomIdProps"
-                  />
-                </v-col>
-              </v-row>
+              <v-select
+                variant="outlined"
+                density="comfortable"
+                label="Malzeme Türü"
+                :items="itemTypeOptions"
+                v-model="itemType"
+                v-bind="itemTypeProps"
+              />
+              <v-text-field
+                label="Miktar"
+                variant="outlined"
+                density="comfortable"
+                type="number"
+                v-model="quantity"
+                v-bind="quantityProps"
+              >
+                <template #append-inner>
+                  {{ materialUom }}
+                </template>
+              </v-text-field>
               <v-btn
                 color="primary"
                 flat
@@ -117,6 +112,17 @@ const items = [
   },
 ];
 
+const itemTypeOptions = [
+  { title: "Bütün", value: "whole" },
+  { title: "Parça", value: "part" },
+];
+
+const uomId = ref(null);
+const materialUom = computed(() => {
+  const uom = uoms.value.find((x) => x.id === uomId.value);
+  return uom ? uom.symbol : "";
+});
+
 const { data: warehouses, status: statusWarehouse } = useLazyAsyncData(
   () => client.get("/warehouses").then((x) => x.data),
   {
@@ -146,14 +152,15 @@ function onSelectMaterial(material) {
 }
 
 const { setErrors, handleSubmit, defineField, resetForm, setValues } = useForm({
-  initialValues: {},
+  initialValues: {
+    item_type: "whole",
+  },
   validationSchema: toTypedSchema(
     object({
       material_id: number().required("Malzeme zorunludur."),
       warehouse_id: number().required("Depo zorunludur."),
       institution_id: number().nullable(),
       quantity: number().required("Miktar zorunludur."),
-      uom_id: number().required("Birim zorunludur."),
     })
   ),
 });
@@ -174,10 +181,9 @@ const [institutionId, institutionIdProps] = defineField(
   vuetifyConfig
 );
 const [quantity, quantityProps] = defineField("quantity", vuetifyConfig);
-const [uomId, uomIdProps] = defineField("uom_id", vuetifyConfig);
+const [itemType, itemTypeProps] = defineField("item_type", vuetifyConfig);
 
 const submit = handleSubmit((values) => {
-  console.log(values);
   client
     .post("/inventory", values)
     .then(() => {

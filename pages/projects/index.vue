@@ -122,6 +122,10 @@ const headers = [
     value: "name",
   },
   {
+    title: "Proje Tipi",
+    value: "type",
+  },
+  {
     title: "PYP No",
     value: "pyp_code",
   },

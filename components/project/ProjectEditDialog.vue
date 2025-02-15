@@ -11,6 +11,14 @@
       /></v-card-title>
       <v-card-text>
         <v-form @submit.prevent="submit">
+          <v-select
+            label="Proje Türü"
+            variant="outlined"
+            density="comfortable"
+            v-model="type"
+            v-bind="typeProps"
+            :items="typeOptions"
+          />
           <v-text-field
             variant="outlined"
             density="comfortable"
@@ -94,6 +102,17 @@ const statuses = [
   },
 ];
 
+const typeOptions = [
+  {
+    title: "Tesis",
+    value: "tesis",
+  },
+  {
+    title: "Ket",
+    value: "ket",
+  },
+];
+
 const dialog = ref(false);
 const id = ref();
 const isEditModel = computed(() => !!id.value);
@@ -107,6 +126,7 @@ const { setErrors, handleSubmit, defineField, resetForm, setValues } = useForm({
   },
   validationSchema: toTypedSchema(
     object({
+      type: string().required("Proje türü zorunludur."),
       name: string().required("Proje adı zorunludur."),
     })
   ),
@@ -118,6 +138,7 @@ const vuetifyConfig = (state) => ({
   },
 });
 
+const [type, typeProps] = defineField("type", vuetifyConfig);
 const [name, nameProps] = defineField("name", vuetifyConfig);
 const [description, descriptionProps] = defineField(
   "description",
