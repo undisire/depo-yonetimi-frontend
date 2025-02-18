@@ -50,8 +50,34 @@
         <template #item.reserved_quantity="{ item }">
           {{ item.reserved_quantity }} {{ item?.uom?.symbol }}
         </template>
+        <template #item.actions="{ item }">
+          <v-menu>
+            <template #activator="{ props }">
+              <v-btn
+                v-bind="props"
+                icon="mdi-dots-horizontal"
+                variant="plain"
+                size="small"
+                class="ml-2"
+                density="comfortable"
+              />
+            </template>
+            <v-list rounded="lg" slim density="compact" lines="one">
+              <v-list-item
+                @click="handleEditQuantity(item)"
+                title="Miktar Düzenle"
+              >
+                <template #prepend>
+                  <v-icon size="20"> mdi-pencil </v-icon>
+                </template>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </template>
       </v-data-table-server>
     </v-card>
+
+    <InventoryQuantityEditDialog ref="editQuantityDialog" @saved="refresh" />
   </v-container>
 </template>
 
@@ -67,11 +93,14 @@ const confirm = useConfirm();
 const loadingConfirm = ref(false);
 const itemsPerPage = ref(50);
 const currentPage = ref(1);
+const editQuantityDialog = ref();
+const selectedItem = ref(null);
+const selectedOperation = ref("update");
 
 const { data, status, refresh, execute } = useLazyAsyncData(
   () =>
     client
-      .get("/inventory", {
+      .get("/inventory/items", {
         params: {
           page: currentPage.value,
           limit: itemsPerPage.value,
@@ -128,5 +157,14 @@ const headers = [
     title: "Rezerv Edilen",
     value: "reserved_quantity",
   },
+  {
+    title: "İşlemler",
+    value: "actions",
+    align: "end",
+  },
 ];
+
+function handleEditQuantity(item) {
+  editQuantityDialog.value.open(item, "update");
+}
 </script>

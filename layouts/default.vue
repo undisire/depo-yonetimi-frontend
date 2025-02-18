@@ -59,7 +59,7 @@ const menu = [
   { icon: "mdi-warehouse", title: "Depolar", to: "/warehouses" },
   { icon: "mdi-package-variant-closed", title: "Projeler", to: "/projects" },
   { icon: "mdi-package", title: "Malzemeler", to: "/materials" },
-  { icon: "mdi-domain", title: "Kurumlar", to: "/institutions" },
+  { icon: "mdi-domain", title: "Kurumlar", to: "/suppliers" },
   { icon: "mdi-ruler", title: "Ölçü Birimleri", to: "/uoms" },
   {
     icon: "mdi-package-variant-closed",
@@ -74,8 +74,8 @@ const menu = [
         to: "/inventory/items/create",
       },
       {
-        title: "Revizyonlar",
-        to: "/inventory/revisions",
+        title: "Rezervler",
+        to: "/inventory/reserves",
       },
       {
         title: "İşlemler",

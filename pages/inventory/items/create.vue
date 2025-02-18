@@ -43,8 +43,8 @@
                 label="Kurum"
                 variant="outlined"
                 density="comfortable"
-                :items="institutions"
-                :loading="statusInstitution === 'pending'"
+                :items="suppliers"
+                :loading="statusSupplier === 'pending'"
                 item-title="name"
                 item-value="id"
                 clearable
@@ -131,8 +131,8 @@ const { data: warehouses, status: statusWarehouse } = useLazyAsyncData(
   }
 );
 
-const { data: institutions, status: statusInstitution } = useLazyAsyncData(
-  () => client.get("/institutions").then((x) => x.data),
+const { data: suppliers, status: statusSupplier } = useLazyAsyncData(
+  () => client.get("/suppliers").then((x) => x.data),
   {
     transform: (res) => res.data,
     default: () => [],
@@ -151,7 +151,7 @@ function onSelectMaterial(material) {
   uomId.value = material?.uom_id || null;
 }
 
-const { setErrors, handleSubmit, defineField, resetForm, setValues } = useForm({
+const { setErrors, handleSubmit, defineField, resetForm } = useForm({
   initialValues: {
     item_type: "whole",
   },
@@ -185,7 +185,7 @@ const [itemType, itemTypeProps] = defineField("item_type", vuetifyConfig);
 
 const submit = handleSubmit((values) => {
   client
-    .post("/inventory", values)
+    .post("/inventory/items", values)
     .then(() => {
       navigateTo("/inventory/items");
       $toast.success("Envanter başarıyla eklendi.");

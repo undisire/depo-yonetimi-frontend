@@ -97,7 +97,7 @@ const headers = [
 ];
 
 const { data, status, refresh } = useLazyAsyncData(
-  () => client.get("/institutions").then((x) => x.data),
+  () => client.get("/suppliers").then((x) => x.data),
   {
     transform: (res) => res.data,
     default: () => [],
@@ -111,7 +111,7 @@ function handleDelete(item) {
     onConfirm: () => {
       loadingConfirm.value = true;
       client
-        .delete(`/institutions/${item.id}`)
+        .delete(`/suppliers/${item.id}`)
         .then(() => {
           $toast.success("Kurum başarıyla silindi.");
           refresh();

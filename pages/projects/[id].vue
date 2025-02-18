@@ -50,7 +50,18 @@
           </v-card-text>
         </v-card>
       </v-col>
-      <v-col>
+      <v-col cols="12" sm="7" md="8">
+        <v-card class="mb-4" rounded="lg" border flat>
+          <v-tabs>
+            <v-tab :to="{ name: 'projects-id-employees', params: { id } }"
+              >Çalışanlar</v-tab
+            >
+            <v-tab :to="{ name: 'projects-id-reserves', params: { id } }"
+              >Malzemeler</v-tab
+            >
+          </v-tabs>
+        </v-card>
+
         <NuxtPage />
       </v-col>
     </v-row>
